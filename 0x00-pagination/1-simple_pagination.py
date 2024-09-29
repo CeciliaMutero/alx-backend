@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+Returns a tuple containing a start index and an end index
+corresponding to the range of indexes for the given page and page size.
+"""
 import csv
 from typing import List, Tuple
 
