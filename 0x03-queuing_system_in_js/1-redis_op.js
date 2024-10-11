@@ -1,5 +1,4 @@
-import { createClient } from 'redis';
-
+import { createClient, print } from 'redis';
 const client = createClient();
 
 client.on('connect', () => {
@@ -10,26 +9,20 @@ client.on('error', (err) => {
   console.log(`Redis client not connected to the server: ${err.message}`);
 });
 
-async function setNewSchool(schoolName, value) {
-  try {
-    await client.set(schoolName, value);
-    console.log(`Reply: OK`);
-  } catch (err) {
-    console.error(err);
-  }
+function setNewSchool(schoolName, value) {
+  client.set(schoolName, value, print);
 }
 
-async function displaySchoolValue(schoolName) {
-  try {
-    const value = await client.get(schoolName);
-    console.log(value || 'School not found');
-  } catch (err) {
-    console.error(err);
-  }
+function displaySchoolValue(schoolName) {
+  client.get(schoolName, (err, reply) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(reply);
+    }
+  });
 }
 
-(async () => {
-  await displaySchoolValue('Holberton');
-  await setNewSchool('HolbertonSanFrancisco', '100');
-  await displaySchoolValue('HolbertonSanFrancisco');
-})();
+displaySchoolValue('Holberton');
+setNewSchool('HolbertonSanFrancisco', '100');
+displaySchoolValue('HolbertonSanFrancisco');
